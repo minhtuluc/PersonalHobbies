@@ -38,10 +38,10 @@ const projects = [
   },
   {
     id: 4,
-    title: "Solar System - Mô phỏng 2D",
-    tagline: "Mô phỏng động học hệ hành tinh bằng thuật toán đồ họa.",
-    description: "Sử dụng API HTML5 Canvas để hiện thực hóa cơ chế dựng hình động học với độ chính xác cao. Áp dụng các thuật toán lượng giác để mô phỏng quỹ đạo và chu kỳ quỹ đạo tương đối của các hành tinh trong Hệ Mặt Trời.",
-    tech: ["Next.js", "HTML5 Canvas", "Vanilla CSS", "React Hooks"],
+    title: "Hologram Solar System 3D",
+    tagline: "Hệ thống trạm theo dõi vũ trụ 3D tích hợp dữ liệu thời gian thực.",
+    description: "Xây dựng môi trường không gian 3D tương tác với Three.js và React Three Fiber. Tích hợp trực tiếp dữ liệu từ NASA, Open-Notify và The Space Devs để tracking toạ độ ISS, danh sách phi hành gia và lịch phóng tàu vũ trụ.",
+    tech: ["Three.js", "React Three Fiber", "Zustand", "SWR"],
     link: "/portfolio/solar-system",
     isInternal: true,
     icon: "🌌"
