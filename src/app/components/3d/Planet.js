@@ -11,7 +11,7 @@ const issFetcher = (url) => fetch(url).then(res => res.json());
 function ISSMarker({ earthRadiusScene }) {
   const meshRef = useRef();
   
-  const { data } = useSWR("http://api.open-notify.org/iss-now.json", issFetcher, {
+  const { data } = useSWR("/api/iss-now", issFetcher, {
     refreshInterval: 5000,
     revalidateOnFocus: false,
   });

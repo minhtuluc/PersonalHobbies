@@ -1,0 +1,9 @@
+export async function GET() {
+  try {
+    const res = await fetch('http://api.open-notify.org/astros.json', { cache: 'no-store' });
+    const data = await res.json();
+    return Response.json(data);
+  } catch (error) {
+    return Response.json({ error: 'Failed to fetch Astros data' }, { status: 500 });
+  }
+}

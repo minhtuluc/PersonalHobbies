@@ -186,12 +186,15 @@ function SunPanel({ planet }) {
 }
 
 function ISSPanel() {
-  const { data: posData, error: posError } = useSWR("http://api.open-notify.org/iss-now.json", fetcher, {
+  const { data: posData, error: posError } = useSWR("/api/iss-now", fetcher, {
     refreshInterval: 5000,
     revalidateOnFocus: false,
   });
   
-  const { data: astrosData } = useSWR("http://api.open-notify.org/astros.json", fetcher, swrOptions);
+  const { data: astrosData } = useSWR("/api/astros", fetcher, {
+    refreshInterval: 60000,
+    revalidateOnFocus: false,
+  });
 
   if (posError) return <div className="hologram-panel__error">Lỗi API: Không thể bắt tín hiệu ISS.</div>;
 
