@@ -1,6 +1,19 @@
 /* Google Fonts loaded via next/font/google in layout.js for zero-CLS, zero-external-request font loading */
 
 :root {
+  /* Hologram Design Tokens */
+  --holo-bg: rgba(8, 20, 28, 0.55);
+  --holo-border: rgba(0, 229, 255, 0.65);
+  --holo-border-glow: rgba(0, 229, 255, 0.35);
+  --holo-accent: #00e5ff;
+  --holo-accent-secondary: #7df9ff;
+  --holo-text: #d6f6ff;
+  --holo-text-dim: rgba(214, 246, 255, 0.55);
+  --holo-warn: #ff8a3d;
+  --holo-radius: 10px;
+  --holo-font-display: "Orbitron", sans-serif;
+  --holo-font-mono: "JetBrains Mono", "Space Mono", monospace;
+
   /* Colors */
   --color-primary: #0066cc;
   --color-primary-focus: #0071e3;
@@ -1174,3 +1187,116 @@ a:hover {
   .cv-lang-level { width: 60px; font-size: 11px; }
 }
 
+/* =========================================
+   Hologram UI & 3D Overlays
+   ========================================= */
+
+.hologram-panel {
+  width: 260px;
+  padding: 14px 16px;
+  background: var(--holo-bg);
+  border: 1px solid var(--holo-border);
+  border-radius: var(--holo-radius);
+  backdrop-filter: blur(8px);
+  box-shadow:
+    0 0 12px var(--holo-border-glow),
+    inset 0 0 18px rgba(0, 229, 255, 0.08);
+  color: var(--holo-text);
+  font-family: var(--holo-font-mono);
+  font-size: 12.5px;
+  line-height: 1.5;
+  position: relative;
+  overflow: hidden;
+}
+
+.hologram-panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 229, 255, 0.06) 50%,
+    transparent 100%
+  );
+  background-size: 100% 6px;
+  animation: holo-scan 3.5s linear infinite;
+  pointer-events: none;
+}
+@keyframes holo-scan {
+  from { background-position-y: 0; }
+  to   { background-position-y: 200px; }
+}
+
+.hologram-panel__title {
+  font-family: var(--holo-font-display);
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--holo-accent);
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--holo-border-glow);
+  padding-bottom: 6px;
+}
+
+.hologram-panel__row {
+  display: flex;
+  justify-content: space-between;
+  color: var(--holo-text-dim);
+}
+.hologram-panel__row span:last-child {
+  color: var(--holo-accent-secondary);
+}
+
+.hologram-panel__error {
+  color: var(--holo-warn);
+  font-size: 11px;
+}
+
+.hologram-panel__image {
+  width: 100%;
+  border-radius: 6px;
+  margin-top: 8px;
+  filter: saturate(1.05) contrast(1.05);
+  border: 1px solid var(--holo-border-glow);
+}
+
+.time-control {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  background: var(--holo-bg);
+  border: 1px solid var(--holo-border);
+  border-radius: 999px;
+  backdrop-filter: blur(8px);
+  font-family: var(--holo-font-mono);
+  font-size: 12px;
+  color: var(--holo-text);
+  z-index: 100;
+}
+
+.time-control input[type="range"] {
+  width: 320px;
+  accent-color: var(--holo-accent);
+}
+
+.time-control__value {
+  min-width: 70px;
+  text-align: right;
+  color: var(--holo-accent);
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .hologram-panel {
+    width: min(78vw, 260px);
+  }
+  .time-control input[type="range"] {
+    width: 220px;
+  }
+}
