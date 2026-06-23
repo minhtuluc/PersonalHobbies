@@ -9,6 +9,9 @@ import Planet from "./Planet";
 import Sun from "./Sun";
 import { useTexture } from "@react-three/drei";
 
+import { EffectComposer, Bloom, ChromaticAberration, Vignette } from "@react-three/postprocessing";
+import { BlendFunction } from "postprocessing";
+
 function Skybox() {
   const texture = useTexture("/textures/8k_stars_milky_way.jpg");
   return (
@@ -22,23 +25,24 @@ function Skybox() {
 function CameraController() {
   const controlsRef = React.useRef();
 
-  useFrame(() => {
+  useFrame((state, delta) => {
     if (controlsRef.current) {
       const storeState = useSceneStore.getState();
       const selected = storeState.selectedPlanet;
       const targetPos = storeState.cameraTargetPos;
-      
-      if (!selected) {
-        targetPos.set(0, 0, 0);
-      }
-      
-      // Mượt mà trượt (lerp) tâm điểm zoom về phía mục tiêu
-      controlsRef.current.target.lerp(targetPos, 0.1);
+
+      const target = selected ? targetPos : new THREE.Vector3(0, 0, 0);
+
+      // Cinematic easing (frame-rate independent dampening)
+      controlsRef.current.target.x = THREE.MathUtils.damp(controlsRef.current.target.x, target.x, 3, delta);
+      controlsRef.current.target.y = THREE.MathUtils.damp(controlsRef.current.target.y, target.y, 3, delta);
+      controlsRef.current.target.z = THREE.MathUtils.damp(controlsRef.current.target.z, target.z, 3, delta);
+
       controlsRef.current.update();
     }
   });
 
-  return <OrbitControls ref={controlsRef} makeDefault minDistance={2} maxDistance={400} />;
+  return <OrbitControls ref={controlsRef} makeDefault minDistance={2} maxDistance={600} enableDamping dampingFactor={0.05} />;
 }
 
 export default function Scene3D() {
@@ -50,8 +54,8 @@ export default function Scene3D() {
     <div style={{ width: "100%", height: "100%" }}>
       <Canvas
         onPointerMissed={() => useSceneStore.getState().setSelectedPlanet(null)}
-        gl={{ 
-          logarithmicDepthBuffer: true, 
+        gl={{
+          logarithmicDepthBuffer: true,
           antialias: true,
           toneMapping: THREE.ACESFilmicToneMapping,
           toneMappingExposure: 1.2
@@ -60,7 +64,7 @@ export default function Scene3D() {
       >
         <color attach="background" args={["#000000"]} />
         <Stars radius={300} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
-        
+
         {/* Ambient light for baseline visibility (very dim) */}
         <ambientLight intensity={0.4} />
 
@@ -72,17 +76,23 @@ export default function Scene3D() {
             const orbitRadiusScene = getOrbitRadiusScene(planet.semiMajorAxisAU);
             const radiusScene = getPlanetSceneRadius(planet.realRadiusKm);
             return (
-              <Planet 
-                key={planet.id} 
-                planet={planet} 
-                orbitRadiusScene={orbitRadiusScene} 
-                radiusScene={radiusScene} 
+              <Planet
+                key={planet.id}
+                planet={planet}
+                orbitRadiusScene={orbitRadiusScene}
+                radiusScene={radiusScene}
               />
             );
           })}
         </React.Suspense>
 
         <CameraController />
+
+        <EffectComposer disableNormalPass>
+          <Bloom luminanceThreshold={1.5} mipmapBlur intensity={0.6} radius={0.8} />
+          <ChromaticAberration offset={[0.0003, 0.0003]} blendFunction={BlendFunction.NORMAL} />
+          <Vignette eskil={false} offset={0.1} darkness={1.1} />
+        </EffectComposer>
       </Canvas>
     </div>
   );

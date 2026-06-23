@@ -12,10 +12,10 @@ export default function Sun({ planet, radiusScene, ...props }) {
   // Load texture if available
   const textures = useTexture(
     planet.texture ? [planet.texture] : [],
-    (loaded) => {}, // onLoad
-    () => {} // onError
+    (loaded) => { }, // onLoad
+    () => { } // onError
   );
-  
+
   const map = textures.length > 0 ? textures[0] : null;
 
   useFrame((_, delta) => {
@@ -26,9 +26,9 @@ export default function Sun({ planet, radiusScene, ...props }) {
   });
 
   return (
-    <mesh 
-      ref={meshRef} 
-      position={[0, 0, 0]} 
+    <mesh
+      ref={meshRef}
+      position={[0, 0, 0]}
       {...props}
       onClick={(e) => {
         e.stopPropagation();
@@ -39,15 +39,16 @@ export default function Sun({ planet, radiusScene, ...props }) {
     >
       <sphereGeometry args={[radiusScene, 32, 32]} />
       {/* MeshBasicMaterial is used so it isn't affected by its own light */}
-      <meshBasicMaterial 
-        color={planet.fallbackColor}
+      <meshBasicMaterial
+        color={new THREE.Color(planet.fallbackColor).multiplyScalar(2.5)}
         map={map}
+        toneMapped={false}
       />
       {/* Center point light representing the Sun's illumination */}
-      <pointLight 
-        position={[0, 0, 0]} 
-        intensity={400} 
-        decay={1} 
+      <pointLight
+        position={[0, 0, 0]}
+        intensity={300}
+        decay={1}
         distance={0}
       />
     </mesh>

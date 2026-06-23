@@ -10,7 +10,7 @@ const issFetcher = (url) => fetch(url).then(res => res.json());
 
 function ISSMarker({ earthRadiusScene }) {
   const meshRef = useRef();
-  
+
   const { data } = useSWR("/api/iss-now", issFetcher, {
     refreshInterval: 5000,
     revalidateOnFocus: false,
@@ -40,7 +40,7 @@ function ISSMarker({ earthRadiusScene }) {
   const y = (orbitRadius * Math.cos(phi));
 
   return (
-    <mesh 
+    <mesh
       ref={meshRef}
       position={[x, y, z]}
       onClick={(e) => {
@@ -61,17 +61,17 @@ import { useSceneStore } from "../../../lib/store";
 
 export default function Planet({ planet, orbitRadiusScene, radiusScene, ...props }) {
   const meshRef = useRef();
-  
+
   // Random initial angle for aesthetics
   const [initialAngle] = useState(() => Math.random() * Math.PI * 2);
   const angleRef = useRef(initialAngle);
-  
+
   const baseSpeed = getAngularSpeedRadPerSec(planet.semiMajorAxisAU);
 
   const texUrls = [];
   if (planet.texture) texUrls.push(planet.texture);
   if (planet.ringTexture) texUrls.push(planet.ringTexture);
-  
+
   const loadedTex = useTexture(texUrls);
   const map = planet.texture ? loadedTex[0] : null;
   const ringMap = planet.ringTexture ? loadedTex[planet.texture ? 1 : 0] : null;
@@ -81,7 +81,7 @@ export default function Planet({ planet, orbitRadiusScene, radiusScene, ...props
     const innerRadius = radiusScene * 1.2;
     const outerRadius = radiusScene * 2.2;
     const geometry = new THREE.RingGeometry(innerRadius, outerRadius, 64);
-    
+
     // Sửa lại UV mapping để texture áp theo chiều dọc/ngang của bán kính
     const pos = geometry.attributes.position;
     const v3 = new THREE.Vector3();
@@ -100,15 +100,15 @@ export default function Planet({ planet, orbitRadiusScene, radiusScene, ...props
     // get timescale directly to avoid re-rendering
     const timeScale = useSceneStore.getState().timeScale;
     angleRef.current += baseSpeed * timeScale * delta;
-    
+
     const x = Math.cos(angleRef.current) * orbitRadiusScene;
     const z = Math.sin(angleRef.current) * orbitRadiusScene;
-    
+
     if (meshRef.current) {
       meshRef.current.position.set(x, 0, z);
       // Axial rotation (spin)
       meshRef.current.rotation.y += (planet.spinSpeed || 0.01) * timeScale * delta;
-      
+
       // Nếu hành tinh này đang được chọn, cập nhật toạ độ tâm điểm cho Camera
       if (useSceneStore.getState().selectedPlanet?.id === planet.id) {
         useSceneStore.getState().cameraTargetPos.set(x, 0, z);
@@ -130,7 +130,7 @@ export default function Planet({ planet, orbitRadiusScene, radiusScene, ...props
         opacity={0.35}
       />
 
-      <mesh 
+      <mesh
         ref={meshRef}
         onClick={(e) => {
           e.stopPropagation();
@@ -140,22 +140,22 @@ export default function Planet({ planet, orbitRadiusScene, radiusScene, ...props
         onPointerOut={(e) => (document.body.style.cursor = 'auto')}
       >
         <sphereGeometry args={[radiusScene, 32, 32]} />
-        <meshStandardMaterial 
+        <meshStandardMaterial
           color={planet.fallbackColor}
           map={map}
           roughness={0.7}
           metalness={0.1}
         />
-        
+
         {/* Saturn Ring */}
         {planet.id === "saturn" && ringGeo && (
           <mesh rotation={[Math.PI / 2.5, 0, 0]} geometry={ringGeo}>
-            <meshStandardMaterial 
-              color={ringMap ? "#ffffff" : "#e3d3a4"} 
+            <meshStandardMaterial
+              color={ringMap ? "#ffffff" : "#e3d3a4"}
               map={ringMap}
-              transparent 
-              opacity={ringMap ? 0.9 : 0.7} 
-              side={THREE.DoubleSide} 
+              transparent
+              opacity={ringMap ? 0.9 : 0.7}
+              side={THREE.DoubleSide}
             />
           </mesh>
         )}

@@ -21,6 +21,8 @@ function LaunchCard({ launch }) {
                       (launch.status?.id === 1 ? "#ffcc00" : 
                       (launch.status?.id === 4 ? "#ff3366" : "var(--holo-text-dim)"));
   
+  const [imgError, setImgError] = useState(false);
+
   return (
     <div style={{
       display: "flex", gap: "20px", padding: "20px", marginBottom: "20px",
@@ -28,9 +30,27 @@ function LaunchCard({ launch }) {
       borderRadius: "8px", backdropFilter: "blur(4px)",
       boxShadow: "inset 0 0 10px rgba(0, 229, 255, 0.05)"
     }}>
-      {launch.image && (
+      {(launch.image && !imgError) ? (
         <div style={{ width: "160px", height: "160px", flexShrink: 0, borderRadius: "6px", overflow: "hidden", border: "1px solid var(--holo-border-glow)" }}>
-          <img src={launch.image} alt={rocket} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          <img 
+            src={launch.image} 
+            alt={rocket} 
+            style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+            onError={() => setImgError(true)}
+          />
+        </div>
+      ) : (
+        <div style={{ 
+          width: "160px", height: "160px", flexShrink: 0, borderRadius: "6px", 
+          border: "1px dashed var(--holo-border)", display: "flex", flexDirection: "column", 
+          justifyContent: "center", alignItems: "center", background: "rgba(0, 229, 255, 0.02)" 
+        }}>
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--holo-accent)" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.5 }}>
+            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="9" y1="15" x2="15" y2="15"></line>
+          </svg>
+          <div style={{ fontSize: "11px", color: "var(--holo-text-dim)", marginTop: "12px", letterSpacing: "2px", textAlign: "center" }}>NO VISUAL</div>
         </div>
       )}
       <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "8px" }}>
