@@ -1,3 +1,7 @@
+# PersonalHobbies / MTL Studio
+
+> [Kế hoạch nâng cấp kỹ thuật và sản phẩm](docs/TECHNICAL_IMPROVEMENT_PLAN.md) là tài liệu bàn giao chính cho đội triển khai, bao gồm mức ưu tiên, hướng sửa, tiêu chí nghiệm thu và thứ tự pull request.
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
